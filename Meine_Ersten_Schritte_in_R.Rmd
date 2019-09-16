@@ -1,0 +1,92 @@
+---
+title: "Meine ersten Schritte in R (Dozentenversion)"
+author: "Norman Markgraf"
+date: "16 9 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vorlesung vom 16.09.2019
+
+Das ist ein Paragraph, in dem kann ich **fett** und *kursiv* schreiben!
+
+Meine erste Zeile R-Code:
+
+```{r}
+43/12+5-14
+```
+
+
+Als erstes lade ich das Paket "mosaic" und danach lade ich die Tabelle "Births78" in den Arbeitsspeicher:
+
+```{r}
+library(mosaic)
+data("Births78")
+```
+
+Wie wollen nun ein Streudiagramm erstellen:
+
+```{r}
+gf_point(births ~ date, data=Births78)
+```
+
+
+```{r}
+gf_point(births ~ date, color = ~ wday, data=Births78)
+```
+
+
+Wie viele Leute wurden am 4. Juli 1978 in den USA geboren?
+
+```{r}
+Births78 %>%
+    filter(date == "1978-07-04") %>%
+    select(births)
+```
+
+
+Wie viele Leute wurden am 9. Mai 1978 in den USA geboren?
+
+```{r}
+Births78 %>%
+    filter(date == "1978-05-09") %>%
+    select(births)
+```
+
+
+Wie viele Kinder werden durchschnittlich an einem Tag in den USA im Jahr 1978 geboren?
+
+```{r}
+mean(births ~ 1, data=Births78)
+```
+
+alternativ:
+```{r}
+mean( ~ births, data=Births78)
+```
+
+
+Wie sieht das über die Woche hin aus?
+
+```{r}
+mean(births ~ wday, data=Births78)
+```
+
+Wie sieht die Geburtenrate pro Monat aus?
+
+```{r}
+mean(births ~ month, data=Births78)
+```
+
+
+
+
+
+
+
+
+
+
