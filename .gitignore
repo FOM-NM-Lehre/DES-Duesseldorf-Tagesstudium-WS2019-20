@@ -39,6 +39,6 @@ rsconnect/
 .Rhistory
 .RData
 .Ruserdata
-#Willkommen.pdf
-#Willkommen.html
-#Willkommen.docx
+*.pdf
+*.html
+*.docx
