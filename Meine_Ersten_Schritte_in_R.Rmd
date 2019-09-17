@@ -27,13 +27,13 @@ library(mosaic)
 data("Births78")
 ```
 
-Wie wollen nun ein Streudiagramm erstellen:
+Wie wollen nun ein Streudiagramm erstellen in dem wir die Anzahl der Geburten (in der Spalte `births`) dem Datum (Spalte `date`) gegenüberstellen:
 
 ```{r}
 gf_point(births ~ date, data=Births78)
 ```
 
-
+Erzeuge ein Streudiagramm mit eingefärbten Wochentagen (`color = ~ wday`):
 ```{r}
 gf_point(births ~ date, color = ~ wday, data=Births78)
 ```
@@ -42,9 +42,9 @@ gf_point(births ~ date, color = ~ wday, data=Births78)
 Wie viele Leute wurden am 4. Juli 1978 in den USA geboren?
 
 ```{r}
-Births78 %>%
-    filter(date == "1978-07-04") %>%
-    select(births)
+Births78 %>%   # Nimm den Datensatz "Births78" UND DANN
+    filter(date=="1978-07-04") %>%  # lasse nur die Daten durch vom 4.7.78 UND DANN
+    select(births)  # Nimm nur die Spalte "births" und gib das Ergebnis aus.
 ```
 
 
@@ -63,7 +63,8 @@ Wie viele Kinder werden durchschnittlich an einem Tag in den USA im Jahr 1978 ge
 mean(births ~ 1, data=Births78)
 ```
 
-alternativ:
+Alternativ geht auch:
+
 ```{r}
 mean( ~ births, data=Births78)
 ```
@@ -75,7 +76,7 @@ Wie sieht das über die Woche hin aus?
 mean(births ~ wday, data=Births78)
 ```
 
-Wie sieht die Geburtenrate pro Monat aus?
+Wie sieht die Geburtenanzahl pro Monat aus?
 
 ```{r}
 mean(births ~ month, data=Births78)
