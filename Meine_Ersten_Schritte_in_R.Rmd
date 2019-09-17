@@ -7,6 +7,7 @@ output: word_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(mosaic)
 ```
 
 ## Vorlesung vom 16.09.2019
@@ -43,7 +44,7 @@ Wie viele Leute wurden am 4. Juli 1978 in den USA geboren?
 
 ```{r}
 Births78 %>%   # Nimm den Datensatz "Births78" UND DANN
-    filter(date=="1978-07-04") %>%  # lasse nur die Daten durch vom 4.7.78 UND DANN
+    filter(date=="1978-07-04") %>%  # Nur Zeilen vom 4.7.78 auswählen UND DANN
     select(births)  # Nimm nur die Spalte "births" und gib das Ergebnis aus.
 ```
 
@@ -84,10 +85,81 @@ mean(births ~ month, data=Births78)
 
 
 
+## Vorlesung vom 17.09.2019
+
+Als erstes wiederholen wir die folgenden Zeilen:
+
+```{r}
+library(mosaic)
+data(Births78)
+```
+
+
+Die Struktur des Datensatzes "Births78" erhalten wir wie folgt:
+
+```{r}
+str(Births78)
+```
+
+Mit dem Befehl `Births78$births` erhalte ich eine Liste aller Geburtenzahlen in der bestehenden Reihenfolge:
+```{r}
+Births78$births
+```
+
+# Explorativer Datenanalyse (Vorlesung 17.9.2019)
+
+Zu Beginn wollen wir EINMAL den Datensatz "tips" aus dem Internet laden, lokal auf ihrem Rechner nur dem Dateinamen "tips.csv" speichern um ihn dann also Datensatz "tips" später nutzen und laden zu können.
+
+```{r}
+# Herunterladen der Daten aus dem Internet:
+download.file("https://goo.gl/whKjnl", destfile = "tips.csv")
+```
 
 
 
+Im nächsten Schritt, den wir am Anfang einer jeden Vorlesung wiederholen müssen, laden wir die Daten aus "tips.csv" in den Datensatz "tips":
+
+```{r}
+tips <- read.csv2("tips.csv")
+```
+
+Schauen wir nun auf die Struktur der tipping-Daten (tips):
+
+```{r}
+str(tips)
+```
 
 
+## Wir erstellen Säulendiagramme
 
+Darstellung als absolute Häufigkeiten:
 
+```{r}
+gf_bar( ~ sex, data=tips)
+```
+
+Darstellung als relative Häufigkeiten (als Anteilswerte):
+```{r}
+gf_props( ~ sex, data=tips)
+```
+
+Darstellung als relative Häufigkeiten (als Prozente):
+```{r}
+gf_percents( ~ sex, data=tips)
+```
+
+```{r}
+prop( ~ sex, success="Male", data=tips)
+```
+
+```{r}
+prop( ~ sex, success="Female", data=tips)
+```
+
+```{r}
+tally( ~ sex, data=tips)
+```
+
+```{r}
+tally( ~ sex, format="proportion", data=tips)
+```
