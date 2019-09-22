@@ -1,12 +1,15 @@
 ---
 title: "Meine ersten Schritte in R (Dozentenversion)"
 author: "Norman Markgraf"
-date: "16 9 2019"
+date: "16.9.2019"
 output: word_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# Wir laden hier das Paket mosaic vor, 
+# damit später keine Warnmeldungen ausgegeben werden!
 library(mosaic)
 ```
 
@@ -77,7 +80,7 @@ Wie sieht das über die Woche hin aus?
 mean(births ~ wday, data=Births78)
 ```
 
-Wie sieht die Geburtenanzahl pro Monat aus?
+Wie sieht die Anzahle der Geburten pro Monat aus?
 
 ```{r}
 mean(births ~ month, data=Births78)
@@ -117,13 +120,13 @@ download.file("https://goo.gl/whKjnl", destfile = "tips.csv")
 
 
 
-Im nächsten Schritt, den wir am Anfang einer jeden Vorlesung wiederholen müssen, laden wir die Daten aus "tips.csv" in den Datensatz "tips":
+Im nächsten Schritt, den wir am Anfang einer jeden Vorlesung wiederholen müssen, laden wir die Daten aus "tips.csv" in den Datensatzvariable "tips":
 
 ```{r}
 tips <- read.csv2("tips.csv")
 ```
 
-Schauen wir nun auf die Struktur der tipping-Daten (tips):
+Ein Datensatz besteht aus verschiedenen Datentypen. Die genaue Struktur können wir wie folgt betrachten:
 
 ```{r}
 str(tips)
@@ -148,18 +151,26 @@ Darstellung als relative Häufigkeiten (als Prozente):
 gf_percents( ~ sex, data=tips)
 ```
 
+
+## Anzeilswerte ausgeben
+
+Wie oft haben Männer bezahlt?
 ```{r}
 prop( ~ sex, success="Male", data=tips)
 ```
 
+Wie oft haben Frauen bezahlt?
 ```{r}
 prop( ~ sex, success="Female", data=tips)
 ```
 
+Die absoluten Werte in einer Tabelle (*tally* vom engl. Wort für *Stichliste*)
 ```{r}
 tally( ~ sex, data=tips)
 ```
 
+Die selbe Information, nun aber als Anzeilswerte:
 ```{r}
 tally( ~ sex, format="proportion", data=tips)
 ```
+
