@@ -174,3 +174,30 @@ Die selbe Information, nun aber als Anzeilswerte:
 tally( ~ sex, format="proportion", data=tips)
 ```
 
+## Vorlesung vom 23.9.2019
+
+Zu Beginn laden wir das Paket mosaic und die tips Daten:
+
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+```{r}
+gf_histogram( ~ tip ,data=tips, binwidth= 1, center= 0.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
