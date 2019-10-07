@@ -187,15 +187,60 @@ tips <- read.csv2("tips.csv")
 gf_histogram( ~ tip ,data=tips, binwidth= 1, center= 0.5)
 ```
 
+## Vorlesung vom 1.10.2019
+
+Zu Beginn laden wir das Paket **mosaic** und die *tipping*-Daten:
+
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+
+```{r}
+inspect(tips)
+```
+
+Einen Blick auf die Kennzahlen:
+
+```{r}
+favstats( ~ total_bill, data=tips)
+```
+
+
+## Offene Übung 58
+
+- Histogramm
+```{r}
+gf_histogram( ~ total_bill | smoker, data=tips)
+```
+
+- Boxplot
+```{r}
+gf_boxplot(total_bill ~ smoker, data=tips)
+```
+
+- Kennzahlen (allg.)
+```{r}
+favstats(total_bill ~ smoker, data=tips)
+```
+
+- IQR
+```{r}
+iqr(total_bill ~ smoker, data=tips)
+```
 
 
 
 
+## Vorlesung vom 7.10.2019
 
+Zu Beginn laden wir das Paket **mosaic** und die *tipping*-Daten:
 
-
-
-
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
 
 
 
