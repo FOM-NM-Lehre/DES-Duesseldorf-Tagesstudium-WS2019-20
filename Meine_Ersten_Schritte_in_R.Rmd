@@ -244,5 +244,28 @@ tips <- read.csv2("tips.csv")
 
 
 
+```{r}
+cor(tip ~ total_bill, data=tips)
+```
 
+ Erstelle ein lineares Modell für den Zusammenhang von Trinkgeldhöhe (tip) und Rechnungshöhe (total_bill):
+ 
+```{r}
+erglm1 <- lm(tip ~ total_bill, data=tips)
+erglm1
+```
+ 
+
+```{r}
+plotModel(erglm1)
+```
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
