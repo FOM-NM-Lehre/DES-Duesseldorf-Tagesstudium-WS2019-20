@@ -231,8 +231,6 @@ iqr(total_bill ~ smoker, data=tips)
 ```
 
 
-
-
 ## Vorlesung vom 7.10.2019
 
 Zu Beginn laden wir das Paket **mosaic** und die *tipping*-Daten:
@@ -259,6 +257,39 @@ erglm1
 ```{r}
 plotModel(erglm1)
 ```
+ 
+ 
+ 
+ 
+## Vorlesung vom 15.10.2019
+
+Zu Beginn laden wir das Paket **mosaic** und die *tipping*-Daten:
+
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+
+Übung 84:
+```{r}
+erglmUeb <- lm( total_bill ~ size + time, data= tips)
+plotModel(erglmUeb)
+summary(erglmUeb)
+
+Bootvtlg <- do(10000) * lm(total_bill ~ size + time, data= resample(tips))
+confint(Bootvtlg)
+```
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
