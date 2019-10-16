@@ -271,32 +271,34 @@ tips <- read.csv2("tips.csv")
 ```
 
 
-Übung 84:
-```{r}
-erglmUeb <- lm( total_bill ~ size + time, data= tips)
-plotModel(erglmUeb)
-summary(erglmUeb)
+### Übung 84:
 
+```{r}
+# Erstellen des multiplen linearen Regressionsmodels
+erglmUeb <- lm( total_bill ~ size + time, data= tips)
+```
+
+```{r}
+
+# Ausgabe des Modells als Graphik
+plotModel(erglmUeb)
+```
+
+```{r}
+
+# Zusammenfassung aller Modelinformationen
+summary(erglmUeb)
+```
+
+```{r}
+
+# Erstellen einer Bootstrap-Verteilung
 Bootvtlg <- do(10000) * lm(total_bill ~ size + time, data= resample(tips))
+```
+
+```{r}
+# Ausgabe der Konfidenzintervalle
 confint(Bootvtlg)
 ```
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
