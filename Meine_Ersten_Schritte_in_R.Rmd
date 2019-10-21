@@ -310,6 +310,7 @@ Erste Schritte in Richtung Hausarbeit! Dazu laden wir einmal die Tipping-Daten u
 library(mosaic)
 tips <- read.csv2("tips.csv")
 set.seed(2009)
+maa <- c() # Hier speichern wir die Prüfwerte für eine Auswertung!
 ```
 
 Zunächst schrenken wir die tipping-Daten auf die Variabeln "total_bill", "sex", "smoker", "day", "time", "size" ein:
@@ -355,7 +356,7 @@ mean(~ total_bill, data=tipstrain)
 Nun bestimmte ich für das Testmodell eine Vorhersage:
 ```{r}
 predict.null <- predict(lm.null, newdata=tipstest)
-predict.null
+# predict.null
 ```
 
 
@@ -364,7 +365,9 @@ Im Nullmodell wird dabei jede Vorhersage dem Mittelwert ensprechen!
 ## Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
-sum( abs( tipspruef$total_bill - predict.null))
+x <- sum( abs( tipspruef$total_bill - predict.null))
+maa <- c(maa, x)
+x
 ```
 
 
@@ -386,7 +389,9 @@ predict.versuch1 <- predict(lm.versuch1, newdata=tipstest)
 ## Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
-sum( abs( tipspruef$total_bill - predict.versuch1))
+x <- sum( abs( tipspruef$total_bill - predict.versuch1))
+maa <- c(maa, x)
+x
 ```
 
 
@@ -405,10 +410,12 @@ predict.versuch2 <- predict(lm.versuch2, newdata=tipstest)
 ## Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
-sum( abs( tipspruef$total_bill - predict.versuch2))
+x <- sum( abs( tipspruef$total_bill - predict.versuch2))
+maa <- c(maa, x)
+x
 ```
 
-## Das zweite NICHT-Nullmodell
+## Das dritte NICHT-Nullmodell
 
 ```{r}
 lm.versuch3 <- lm( total_bill ~ size + smoker, data=tipstrain)
@@ -420,13 +427,24 @@ Nun bestimmte ich für das Testmodell eine Vorhersage:
 predict.versuch3 <- predict(lm.versuch3, newdata=tipstest)
 #predict.versuch3
 ```
+
 ## Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
-sum( abs( tipspruef$total_bill - predict.versuch3))
+x <- sum( abs( tipspruef$total_bill - predict.versuch3))
+maa <- c(maa, x)
+x
 ```
 
 
+
+
+## Gesamtauswertung:
+
+```{r}
+names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch")
+maa
+```
 
 
 
