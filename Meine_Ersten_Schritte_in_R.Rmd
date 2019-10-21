@@ -302,3 +302,131 @@ confint(Bootvtlg)
 ```
 
  
+## Vorlesung vom 21.10.2019
+
+Erste Schritte in Richtung Hausarbeit! Dazu laden wir einmal die Tipping-Daten und starten Mosaic:
+
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+set.seed(2009)
+```
+
+Zunächst schrenken wir die tipping-Daten auf die Variabeln "total_bill", "sex", "smoker", "day", "time", "size" ein:
+
+```{r}
+tips %>%
+    select(c("total_bill", "sex", "smoker", "day", "time", "size")) -> tips
+```
+
+Ziel ist es, den Rechnungsbetrag ("total_bill") auf Grundlage der Werte von "sex", "smoker", "day", "time" und "size" vorherzusagen.
+
+Wir teilen den tipping-Datensatz auf in eine Trainings-Datensatz ("tipstrain"), einem Test-Datensatz ("tipstest") und einem Prüfdatensatz ("tipspruef"). Der Trainingsdatensatz sollte rund 66% der Daten die wir haben umfassen. Der Testdatensatz die restlich ca. 33%
+
+```{r}
+# n.train ist ein Index für alle Werte, die wir im Trainingsdatensatz haben wollen
+x.train <- sample(1:nrow(tips), floor(2/3*nrow(tips)))
+tipstrain <- slice(tips, x.train)
+tipspruef <- slice(tips, -(x.train))
+tipspruef %>% 
+    select(-total_bill) -> tipstest
+```
+
+
+Mit dem Tainingsdatensatz versuchen wir nun ein Prognosemodell zu erstellen.
+Mit diesem Modell versuchen wir dann aus dem Testdatensatz eine Prognose für "total_bill" zu erzeugen und vergleichen dies dann (im Wettbewerb macht das der Dozent für die Note!) mit dem Prüfdatensatz.
+
+
+### Das Nullmodel
+
+```{r}
+lm.null <- lm( total_bill ~ 1, data=tipstrain)
+summary(lm.null)
+```
+
+
+Das Nullmodell sagt in jedem Fall den Rechnungsbetrag vorher als den Mittelwert
+
+der Trainingsdaten!
+```{r}
+mean(~ total_bill, data=tipstrain)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.null <- predict(lm.null, newdata=tipstest)
+predict.null
+```
+
+
+Im Nullmodell wird dabei jede Vorhersage dem Mittelwert ensprechen!
+
+## Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+sum( abs( tipspruef$total_bill - predict.null))
+```
+
+
+Jedes Modell, das einen kleiner Wert liefter ist mindesten 4,0!
+
+
+## Das erste NICHT-Nullmodell
+
+```{r}
+lm.versuch1 <- lm( total_bill ~ size, data=tipstrain)
+summary(lm.versuch1)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch1 <- predict(lm.versuch1, newdata=tipstest)
+#predict.versuch1
+```
+## Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+sum( abs( tipspruef$total_bill - predict.versuch1))
+```
+
+
+## Das zweite NICHT-Nullmodell
+
+```{r}
+lm.versuch2 <- lm( total_bill ~ size * smoker, data=tipstrain)
+summary(lm.versuch2)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch2 <- predict(lm.versuch2, newdata=tipstest)
+#predict.versuch2
+```
+## Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+sum( abs( tipspruef$total_bill - predict.versuch2))
+```
+
+## Das zweite NICHT-Nullmodell
+
+```{r}
+lm.versuch3 <- lm( total_bill ~ size + smoker, data=tipstrain)
+summary(lm.versuch3)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch3 <- predict(lm.versuch3, newdata=tipstest)
+#predict.versuch3
+```
+## Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+sum( abs( tipspruef$total_bill - predict.versuch3))
+```
+
+
+
+
+
