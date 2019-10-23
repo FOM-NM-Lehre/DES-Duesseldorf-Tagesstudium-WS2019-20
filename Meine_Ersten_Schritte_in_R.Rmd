@@ -260,9 +260,7 @@ erglm1
 plotModel(erglm1)
 ```
  
- 
- 
- 
+
 ## Vorlesung vom 15.10.2019
 
 Zu Beginn laden wir das Paket **mosaic** und die *tipping*-Daten:
@@ -379,6 +377,7 @@ head(predict.null)
 
 Im Nullmodell wird dabei jede Vorhersage dem Mittelwert ensprechen!
 
+
 ### Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
@@ -426,6 +425,7 @@ predict.versuch2 <- predict(lm.versuch2, newdata=tipstest)
 head(predict.versuch2)
 ```
 
+
 ### Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
@@ -433,6 +433,7 @@ x <- sum( abs( tipspruef$total_bill - predict.versuch2))
 maa <- c(maa, x)
 x
 ```
+
 
 ## Das dritte NICHT-Nullmodell
 
@@ -447,6 +448,7 @@ predict.versuch3 <- predict(lm.versuch3, newdata=tipstest)
 head(predict.versuch3)
 ```
 
+
 ### Auswertung! (Das macht der Prüfer, nicht sie!)
 
 ```{r}
@@ -454,6 +456,7 @@ x <- sum( abs( tipspruef$total_bill - predict.versuch3))
 maa <- c(maa, x)
 x
 ```
+
 
 ## Gesamtauswertung:
 
@@ -466,6 +469,3 @@ names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch")
 # Ausgabe der Tabelle:
 maa
 ```
-
-
-

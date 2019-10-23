@@ -1,0 +1,264 @@
+---
+title: "Erste Schritte in Richtung Hausarbeit"
+author: "Norman Markgraf"
+date: "23 10 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mosaic)
+```
+
+
+## Vorlesung vom 21.10.2019
+
+Erste Schritte in Richtung Hausarbeit! Dazu laden wir einmal die Tipping-Daten und starten Mosaic:
+
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+
+# Für die Reproduzierbarkeit setzen wir den Startwert:
+set.seed(2009)
+
+# Eine (leere) Liste für die Prüfwerte erzeugen
+maa <- c() 
+```
+
+Zunächst schrenken wir die tipping-Daten auf die Variabeln "total_bill", "sex", "smoker", "day", "time", "size" ein und speichern das Ergebnis wieder in `tips`:
+
+```{r}
+tips %>%
+    select(c("total_bill", "sex", "smoker", "day", "time", "size")) -> tips
+```
+
+
+Ziel ist es, den Rechnungsbetrag ("total_bill") auf Grundlage der Werte von "sex", "smoker", "day", "time" und/oder "size" vorherzusagen.
+
+Wir teilen den tipping-Datensatz auf in eine Trainingsdatensatz ("tipstrain"), einem Testdatensatz ("tipstest") und einem Prüfdatensatz ("tipspruef"). 
+Der Trainingsdatensatz sollte rund zweidrittel der Daten die wir haben umfassen. 
+Der Testdatensatz die restlich ca. eindrittel.
+
+```{r}
+# n.train ist ein Index für alle Werte, 
+# die wir im Trainingsdatensatz haben wollen:
+x.train <- sample(1:nrow(tips), floor(2/3*nrow(tips)))
+
+# Trainingsdatensatz erstellen:
+tipstrain <- slice(tips, x.train)
+
+# Prüfdatensatz erstellen, also alles was 
+# nicht in den Trainingsdatensatz gekommen ist:
+tipspruef <- slice(tips, -(x.train))
+
+# Der Testdatensatz ist der Prüfdatensatz 
+# ohne die Variable total_bill:
+tipspruef %>% 
+    select(-total_bill) -> tipstest
+```
+
+
+Mit dem Tainingsdatensatz versuchen wir nun ein Prognosemodell zu erstellen, um aus den Testdatensatz eine Prognose für "total_bill" zu erstellen. Hier werden wir dann die Daten mit den tatsächlichen Daten (aus dem Prüfdatensatz) vergleicht. In der Hausarbeit haben sie, wie in der Realität auch, diese Informationen/Daten nicht. Um aber die Auswirkungen unserer Entscheidungen besser verstehen zu können haben wir in dieser Übung die Prüfdaten vorliegen. In der Hausarbeit hat der\*ie Prüfer\*in diese ebenfalls und wird daran die Note für das Modell berechnen.
+
+## Die Datenlage
+
+Ein (paar) Blick(e) auf unsere Trainingsdaten:
+
+```{r}
+gf_point(total_bill ~ jitter(size), color=~time, data=tipstrain)
+```
+
+
+```{r}
+gf_point(total_bill ~ day | time, color = ~ sex, data=tipstrain)
+```
+
+
+## Das Nullmodel aka Regression mit der Achse
+
+Wir erstellen das Nullmodell wie folgt:
+```{r}
+lm.null <- lm( total_bill ~ 1, data=tipstrain)
+summary(lm.null)
+```
+
+
+Das Nullmodell sagt in jedem Fall den Rechnungsbetrag vorher als den Mittelwert der Trainingsdaten!
+
+```{r}
+mean(~ total_bill, data=tipstrain)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.null <- predict(lm.null, newdata=tipstest)
+head(predict.null)
+```
+
+
+Im Nullmodell wird dabei jede Vorhersage dem Mittelwert ensprechen!
+
+
+### Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.null))
+maa <- c(maa, x)
+x
+```
+
+
+Jedes Modell, das einen kleiner Wert liefter ist mindesten 4,0!
+
+
+## Das erste NICHT-Nullmodell
+
+```{r}
+lm.versuch1 <- lm( total_bill ~ size, data=tipstrain)
+summary(lm.versuch1)
+plotModel(lm.versuch1)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch1 <- predict(lm.versuch1, newdata=tipstest)
+head(predict.versuch1)
+```
+
+## Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.versuch1))
+maa <- c(maa, x)
+x
+```
+
+
+## Das zweite NICHT-Nullmodell
+
+```{r}
+lm.versuch2 <- lm( total_bill ~ size * smoker, data=tipstrain)
+summary(lm.versuch2)
+plotModel(lm.versuch2)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch2 <- predict(lm.versuch2, newdata=tipstest)
+head(predict.versuch2)
+```
+
+
+### Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.versuch2))
+maa <- c(maa, x)
+x
+```
+
+
+## Das dritte NICHT-Nullmodell
+
+```{r}
+lm.versuch3 <- lm( total_bill ~ size + smoker, data=tipstrain)
+summary(lm.versuch3)
+plotModel(lm.versuch3)
+```
+
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch3 <- predict(lm.versuch3, newdata=tipstest)
+head(predict.versuch3)
+```
+
+
+### Auswertung! (Das macht der Prüfer, nicht sie!)
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.versuch3))
+maa <- c(maa, x)
+x
+```
+
+
+## Gesamtauswertung / Zusammenfassung:
+
+Die einzelnen Ergebnisse sind nun in einer Liste `maa` gespeichert und wir können die Ergebnisse vergleichen:
+
+```{r}
+# Spaltenüberschriften hinzufügen:
+names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch")
+
+# Ausgabe der Tabelle:
+maa
+```
+
+
+## Weitere Ideen
+
+Zwar ist die Tischgröße eine Zahl, aber wäre es nicht sinnvoll diese Variabel als (geordnete) kategoriale Variable anzusehen? Und was ist der Unterschied?
+
+
+
+```{r}
+tipstrain %>% mutate(size = as.factor(size)) -> tipstrain_f
+tipstest %>% mutate(size = as.factor(size)) -> tipstest_f
+```
+
+### 4. Versuch
+
+```{r}
+lm.versuch4 <- lm( total_bill ~ size, data=tipstrain_f)
+summary(lm.versuch4)
+plotModel(lm.versuch4)
+```
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch4 <- predict(lm.versuch4, newdata=tipstest_f)
+head(predict.versuch4)
+```
+
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.versuch4))
+maa <- c(maa, x)
+x
+```
+```{r}
+# Spaltenüberschriften hinzufügen:
+names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch", "4. Versuch")
+
+# Ausgabe der Tabelle:
+maa
+```
+
+### 5. Versuch
+
+```{r}
+lm.versuch5 <- lm( total_bill ~ size +  smoker, data=tipstrain_f)
+summary(lm.versuch5)
+plotModel(lm.versuch5)
+```
+Nun bestimmte ich für das Testmodell eine Vorhersage:
+```{r}
+predict.versuch5 <- predict(lm.versuch5, newdata=tipstest_f)
+head(predict.versuch5)
+```
+
+
+```{r}
+x <- sum( abs( tipspruef$total_bill - predict.versuch5))
+maa <- c(maa, x)
+x
+```
+
+```{r}
+# Spaltenüberschriften hinzufügen:
+names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch", 
+                "4. Versuch", "5. Versuch")
+
+# Ausgabe der Tabelle:
+t(maa)
+```
