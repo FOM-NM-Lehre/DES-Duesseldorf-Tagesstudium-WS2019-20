@@ -42,3 +42,5 @@ rsconnect/
 *.pdf
 *.html
 *.docx
+*.log
+tips.csv
