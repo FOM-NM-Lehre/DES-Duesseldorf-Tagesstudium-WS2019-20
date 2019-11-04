@@ -469,3 +469,162 @@ names(maa) <- c("Nullmodell", "1.Versuch", "2. Versuch", "3. Versuch")
 # Ausgabe der Tabelle:
 maa
 ```
+
+
+## Vorlesung vom 04.11.2019
+
+Statt selber mit der Münze zu spielen, können wir die 10 Würfe auch mit dem Rechner simulieren:
+
+```{r}
+library(mosaic)
+rflip(n = 10)
+```
+Wir erhalten die Anzahl der Kopfwürfe ("Numer of Heads") und den Anteilswert der Kopfwürfe ("Proportion Heads").
+
+Viel schneller als mit einer echten Münze können wir so dieses Spiel 100-mal wiederholen und uns dann ansehen, wie sich die Anzahl der Kopfwürfe verteilt:
+
+```{r}
+library(mosaic)
+set.seed(2009) # Oder jeder andere Wert! Reproduzierbarkeit!
+
+muenzverteilung <- do(100) * rflip(n = 10) 
+```
+
+Schauen wir uns einmal die ersten 10 Einträge der Verteilung an:
+```{r}
+head(muenzverteilung, 10)
+```
+
+Und im Anschluss die Verteilung der Kopfwürfe ("heads") als Säulendiagramm:
+
+```{r}
+gf_bar( ~ heads, data=muenzverteilung )
+```
+
+Für einen ersten Blick reicht das, aber wir können das alles auch etwas schöner machen:
+
+```{r}
+gf_props( ~ heads, 
+         title="100 Stichproben des Spiels mit 10 Münzwürfen",
+         xlab = "Anzahl der Kopfwürfe",
+         ylab = "Anteilswert",
+         xlim = c(0, 10),
+         data=muenzverteilung) %>% 
+  gf_refine(
+    scale_x_continuous(
+      breaks = 0:10,      # 0,1,2,3,4,5,6,7,8,9,10 als Positionen auf der X-Achse
+      limits=c(0, 10))    # Den gesamten Bereich von 0 bis 10 Ausgeben!
+  )
+```
+
+Wir können nun sehen wie oft mindestens 8 mal Kopf geworfen wurde: 
+
+```{r}
+count( ~heads >=8, data=muenzverteilung)
+```
+
+Diese `r count( ~heads >=8, data=muenzverteilung)` entsprechen einem Anteilswert von:
+
+```{r}
+prop( ~heads >=8, data=muenzverteilung)
+```
+
+Das heißt, bei einer *fairen Münze* erwarten wir nur in rund `r perc(~heads >=8, data=muenzverteilung)`% der Fälle ein Ergebnis von 8 oder mehr Kopfwürfen.
+
+
+### Zur Folie: Stichprobenverteilung (I/III)
+
+Erstellen wir zunächst die Population:
+
+```{r}
+population <- rep(factor(c("f","r")), c(220000, 120000))
+```
+
+Für die Population gilt somit:
+
+```{r}
+prop( ~ population, success = "r")
+```
+
+Nimmt man nun Stichproben (n=34), dann variiert auch der Anteil in der Stichprobe: 
+
+```{r}
+prop( ~ sample(population, size = 34), success = "r")
+prop( ~ sample(population, size = 34), success = "r")
+```
+
+Bauen wir uns nun darauf die Spichprobenverteilung ("Stiprovtlg"):
+```{r}
+Stiprovtlg <- do(10000) * prop( ~ sample(population, size=34), success = "r")
+``` 
+
+Wir können nun den Standardfehler bestimmen:
+```{r}
+sd( ~ prop_r, data=Stiprovtlg)
+```
+
+Und nun schauen wir uns die Stichprobenverteilung als Säulendiagramm an:
+
+```{r}
+gf_bar( ~ prop_r, data=Stiprovtlg)
+```
+
+### Zur Folie Bootstrap-Verteilung
+
+Wir konstuieren die Bootstrap-Verteilung wie folgt:
+
+```{r}
+set.seed(2009)
+
+stipro <- rep(factor(c("r","f")),c(12,22))
+
+Bootvtlg <- do(10000) * prop( ~ resample(stipro), success = "r")
+```
+
+Und schauen uns diese Verteilung an:
+
+```{r}
+gf_bar(~ prop_r, data=Bootvtlg)
+```
+
+Das Konfidenzintervall lautet nun:
+```{r}
+quantile(~prop_r, probs=c(0.025, 0.975), data=Bootvtlg)
+```
+
+Wir erhalten diese Werte auch wie folgt:
+```{r}
+confint(Bootvtlg)
+```
+
+Das 90% KI erhalten wir auch so:
+```{r}
+confint(Bootvtlg, level=0.9)
+```
+
+Das 99%-KI wie folgt:
+```{r}
+confint(Bootvtlg, level=0.99)
+```
+
+
+### Simulation der Verteilung unter der $H_0$
+
+Wie sähe die Verteilung der Stichproben aus, wenn in der Population $\pi = \frac13$ gelten würden? -- Wir simulieren diese Nullverteilung ("Nullvtlg") einmal:
+
+```{r}
+set.seed(2009)
+Nullvtlg <- do(10000) * rflip(n = 34, prob = 1/3)
+```
+
+Und stellen das Ergebnis dar:
+
+```{r}
+gf_bar( ~ heads, data = Nullvtlg ) %>% 
+  gf_refine(
+    scale_x_continuous(
+      breaks = 0:34,      
+      limits=c(NA, NA))  
+  )
+```
+
